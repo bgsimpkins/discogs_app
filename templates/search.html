@@ -1,0 +1,97 @@
+{% extends "menuBar.html" %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+
+    <title>Discogs API Search and Monitor</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='searchScript.js') }}"></script>
+</head>
+    <br>
+    {% if alert_text %}
+        <div id="form_alert" style="...">
+            {{alert_text}}
+        </div>
+    {% endif%}
+
+    <h3>Discogs API token:</h3>
+    <div id="token" style="...">
+        <form method="post">
+            <input type="hidden" name="form_id" value="token_saved">
+            Current token:<input type="text" id="save_token" name="save_token" value="{{token.token}}">
+            <br>
+            Token date={{token.token_date}}
+            <br><br>
+            <input type="submit" id="token_save_button" value="Save Token">
+        </form>
+
+    </div>
+    {% if form_id == 'token_saved'%}
+    <div id="token_saved_alert">
+        <br>
+        Token Saved!
+    </div>
+    {% endif %}
+
+    <div id="debugText"></div>
+    <br>
+    <div id="search_bar" style="..."></div>
+    <form id="search_form" method="post">
+        <input type="hidden" name="form_id" value="do_search_album">
+        <h3>Search:</h3>
+        Artist:<input type="text" id="search_artist" name="search_artist" value="{%if searched_data %} {{searched_data[0]}} {%endif%}"><br>
+        Album:<input type="text" id="search_album" name="search_album" value="{%if searched_data %} {{searched_data[1]}} {%endif%}"><br>
+        <br>
+        Max Results:<input type="text" id="max_results" name="max_results" value="10"><br>
+        <br>
+        <input type="submit" id= "search" value="Search">
+    </form>
+
+
+
+    <br><br>
+
+    {% if search_results %}
+
+        <table>
+            <tbody>
+                <tr>
+                    <th>Master Id</th>
+                    <th>Artist</th>
+                    <th>Title</th>
+                    <th>Formats</th>
+                    <th>Year</th>
+                    <th>Country</th>
+                </tr>
+                {% for result in search_results %}
+                    <tr class="searchResult">
+                        <td id="res_master_id"><a href="{{result.master_url}}" target="_blank">{{ result.master_id }}</a></td>
+                        <td id="res_artist">{{ result.artist }}</td>
+                        <td id="res_title">{{ result.title }}</td>
+                        <td id="res_formats">{{ result.formats }}</td>
+                        <td id="res_year">{{ result.year }}</td>
+                        <td id="res_country">{{ result.country }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <form id="save_watchlist_form" method="post">
+            <input type="hidden" name="form_id" value="save_to_watchlist">
+            <input type="hidden" id="selected_master_id" name="selected_master_id">
+            Select Format:
+            <select name="format_select" id="format_select">
+                <option value="cd" selected>CD</option>
+                <option value="vinyl">Vinyl</option>
+            </select>
+            <br>
+            <input type="submit" id="save_to_watchlist" value="Save To Watchlist">
+        </form>
+    {% endif%}
+
+    <div id="overlay" hidden>
+        <img src="{{ url_for('static', filename='throbber_13.gif') }} ">
+    </div>
+
+{% endblock %}

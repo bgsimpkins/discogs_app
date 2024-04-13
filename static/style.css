@@ -1,0 +1,129 @@
+
+h3{
+    font-family: arial;
+}
+ /* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f7facd;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #c1d6f9;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+table{
+    background-color:#f5eeed;
+    border-style: solid;
+    border-width: 1px;
+    font-family: arial;
+}
+
+th{
+    color: #FFFFFF;
+    background-color: #33B5E5;
+    font-family: arial;
+}
+
+tr:hover{
+    background-color:#E0D3D0;
+}
+
+#field_submit{
+	width: 140px;
+	height: 60px;
+	background-color: #cee3cb;
+	font-family: arial;
+}
+
+#field_submit:hover{
+	background-color:#83ED71;
+}
+
+#form_alert{
+    width: 400px;
+	height: 24px;
+	background-color:#FCCA78;
+	border-style: solid;
+    border-width: 1px;
+}
+
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    filter:alpha(opacity=50);
+    -moz-opacity:0.5;
+    -khtml-opacity: 0.5;
+    opacity: 0.5;
+    z-index: 10000;
+    /*text-align: center;*/
+    /*display:hidden;*/
+}
+
+#overlay img{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Split the screen in half */
+.split {
+  height: 100%;
+  width: 50%;
+  position: fixed;
+  z-index: 1;
+  top: 30;
+  overflow-x: hidden;
+  padding-top: 20px;
+  border-color: #f3e9d7;
+  border-style: solid;
+  border-width: 1px;
+
+}
+
+/* Control the left side */
+.left {
+  left: 0;
+  background-color: #111;
+}
+
+/* Control the right side */
+.right {
+  right: 0;
+  background-color: #111;
+}
+
+.bold_row{
+    font-weight: bold;
+}
+
+.debug_message_white{
+    color: white;
+}
+
+.number_input{
+    width:30px;
+}

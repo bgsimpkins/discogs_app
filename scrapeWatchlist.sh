@@ -1,0 +1,1 @@
+docker run --rm --env-file .env -e APP_MODE=SCRAPE --network=host discogs

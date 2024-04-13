@@ -1,0 +1,97 @@
+{% extends "menuBar.html" %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <title>Discogs API Search and Monitor</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='marketWatchScript.js') }}"></script>
+</head>
+    <br>
+    <h2>Market Watchlist</h2>
+
+    <div class="split left">
+    {% if watchlist %}
+        <div id="debugText" style="color:white"></div>
+        <form id="market_watch_form" method="post">
+            <table>
+                <tbody>
+                    <tr>
+                        <th></th>
+                        <th>Master Id</th>
+                        <th>Artist</th>
+                        <th>Title</th>
+                        <th>Format</th>
+                        <th>Year</th>
+                        <th>Country</th>
+                        <th>Num. Items</th>
+                        <th>Min. Price</th>
+                        <th>Desired Price</th>
+                        <th>Last Scrape Date</th>
+                    </tr>
+                    {% for result in watchlist %}
+                        <tr class="searchResult{% if selected_master_id == result.master_id %} bold_row {% endif %}">
+                            <td id="res_select"><input type="checkbox" id="del_{{result.master_id}}" name="del_{{result.master_id}}" value="{{result.master_id}}"></td>
+                            <td id="res_master_id" class="clickable_col"><a href="{{result.master_url}}" target="_blank">{{ result.master_id }}</a></td>
+                            <td id="res_artist" class="clickable_col">{{ result.artist }}</td>
+                            <td id="res_title" class="clickable_col">{{ result.title }}</td>
+                            <td id="res_formats" class="clickable_col">{{ result.formats }}</td>
+                            <td id="res_year" class="clickable_col">{{ result.year }}</td>
+                            <td id="res_country" class="clickable_col">{{ result.country }}</td>
+                            <td id="res_num_items" class="clickable_col">{{ result.num_items }}</td>
+                            <td id="res_min_price" class="clickable_col">{{ result.min_price }}</td>
+                            <td id="res_desired_price"><input type="text" id="des_{{result.master_id}}" name="des_{{result.master_id}}" value="{{ result.desired_price }}"></td>
+                            <td id="res_last_scrape_date" class="clickable_col">{{ result.last_scrape_date }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <input type="hidden" id="selected_master_id" name="selected_master_id">
+            <br><br>
+            <input type="submit" id="update_price" name="update_price" value="Update Desired Prices">
+            <br><br>
+            <input type="submit" id="delete_items" name="delete_items" value="Delete Selected Items">
+            <br><br>
+            <input type="submit" id="scrape_items" name="scrape_items" value="Scrape Selected Items">
+        </form>
+
+    <div id="debug_message" class="debug_message_white" hidden></div>
+    {% endif %}
+    </div>
+
+    <div class="split right">
+        {% if selected_master_id %}
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Item Id</th>
+                        <th>Available in US</th>
+                        <th>Adj. Price</th>
+                        <th>Media Condition</th>
+                        <th>Sleve Condition</th>
+                        <th>Details</th>
+                        <th>Avg. Ratings</th>
+                        <th>Num. Ratings</th>
+                        <th>Country</th>
+                    </tr>
+                    {% for result in item_list %}
+                        <tr class="listResult">
+                            <td id="list_item_id"><a href="{{result.url}}" target="_blank">{{ result.item_id }}</a></td>
+                            <td id="list_avail">{{ result.available }}</td>
+                            <td id="list_price">{{ result.adjusted_price }}</td>
+                            <td id="list_media_condition">{{ result.media_condition }}</td>
+                            <td id="list_sleeve_condition">{{ result.sleeve_condition }}</td>
+                            <td id="list_details">{{ result.details }}</td>
+                            <td id="list_avg_rating">{{ result.avg_rating }}</td>
+                            <td id="list_num_ratings">{{ result.num_ratings }}</td>
+                            <td id="list_country">{{ result.country }}</td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        {% endif%}
+    </div>
+
+{% endblock %}

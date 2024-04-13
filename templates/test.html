@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script>
+    $SCRIPT_ROOT = {{ request.script_root|tojson }};
+  </script>
+  <script type=text/javascript>
+
+  $(document).ready(function()
+  {
+
+    var url = $SCRIPT_ROOT+"/scrape_service?master_id=35137";
+    //var url = $SCRIPT_ROOT+"/test_service";
+    $("#test_div").append(url+"<br><br>");
+    $.get(url, function(data){
+      $("#test_div").append(data);
+    });
+  });
+  </script>
+
+</head>
+<body>
+  <div id="test_div"></div>
+</body>
+</html>
