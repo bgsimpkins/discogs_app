@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver import FirefoxOptions
 from time import sleep
 import re
 
@@ -187,9 +188,12 @@ def accept_cookies(driver):
 
 
 def create_driver(headless=False):
-    ff_options = Options()
-    ff_options.headless = headless
-    return webdriver.Firefox(options=ff_options)
+    # ff_options = Options()
+    # ff_options.headless = headless
+    opts = FirefoxOptions()
+    if headless:
+        opts.add_argument("--headless")
+    return webdriver.Firefox(options=opts)
 
 
 def scrape_for_master(driver, conn, id, format, accept_cookies=True):
