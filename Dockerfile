@@ -1,12 +1,12 @@
-FROM python:3.8-slim-buster
+FROM python:3.9-slim-buster
 ENV TZ="America/Chicago"
 RUN apt-get -y update && apt-get install -y --no-install-recommends ca-certificates curl firefox-esr wget bzip2
 
 ADD requirements.txt .
 RUN python -m pip install -r requirements.txt
 
-#Install geckodriver for Firefox
-RUN GECKODRIVER_VERSION=v0.33.0 && wget https://github.com/mozilla/geckodriver/releases/download/$GECKODRIVER_VERSION/geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz && \
+#Install geckodriver for Firefox (HARD-CODED. NEED TO GET LATEST)
+RUN GECKODRIVER_VERSION=v0.34.0 && wget https://github.com/mozilla/geckodriver/releases/download/$GECKODRIVER_VERSION/geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz && \
     tar -zxf geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz -C /usr/local/bin && \
     chmod +x /usr/local/bin/geckodriver && \
     rm geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz
