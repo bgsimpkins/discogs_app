@@ -116,4 +116,14 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+CREATE TABLE `ScrapeQueue` (
+  `row_id` int NOT NULL AUTO_INCREMENT,
+  `batch_id` int NOT NULL,
+  `master_id` int NOT NULL,
+  status varchar(20),
+  `date_created` datetime DEFAULT NULL,
+  PRIMARY KEY (`row_id`)
+);
+
+
 -- Dump completed on 2022-05-08 22:43:21

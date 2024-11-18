@@ -2,7 +2,7 @@ import os
 import mysql.connector
 import pandas as pd
 
-from discogs_data_classes import RecordItem, RecordMaster
+from discogs_data_classes import RecordItem, RecordMaster, ScrapeQueue
 
 def connect_to_db():
 
@@ -253,3 +253,42 @@ def update_scrape_date_for_master(conn, master_id, date_scraped):
             WHERE master_id = %s;
         """
     execute_sql(conn, sql, [date_scraped, master_id])
+
+
+def get_scrape_queue(conn, batch_id):
+    sql = """
+            SELECT
+                SQ.batch_id,
+                SQ.master_id,
+                WL.formats,
+                SQ.status,
+                SQ.date_created
+            FROM ScrapeQueue SQ
+                INNER JOIN WatchList WL
+                    ON SQ.master_id = WL.master_id
+            WHERE batch_id = %s
+            ;
+        """
+    res: pd.DataFrame = pd.read_sql(sql, conn, params=[batch_id])
+
+    item_list = []
+    for index, row in res.iterrows():
+        item_list.append(ScrapeQueue(
+            batch_id=row['batch_id'],
+            master_id=row['master_id'],
+            formats=row['formats'],
+            status=row['status'],
+            date_created=row['date_created']
+
+        ))
+    return item_list
+
+
+def update_scrape_status(conn, batch_id, status):
+
+        sql = """
+            UPDATE ScrapeQueue
+                SET status= %s
+            WHERE batch_id = %s;
+        """
+        execute_sql(conn, sql, [status, batch_id])

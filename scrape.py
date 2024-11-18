@@ -214,6 +214,27 @@ def scrape_watchlist(conn):
         scrape_for_master(driver, conn, rec.master_id, rec.formats, cookies)
         i += 1
 
+    driver.close()
+    driver.quit()
+
+
+def scrape_scrapequeue(conn):
+    print('Scraping scrape queue')
+    batch_id = 1            ##TODO: Hard-coded. Need to tweak if wanting to scrape multiple batchs (sync or async)
+    q = dbUtils.get_scrape_queue(conn, batch_id)
+    driver = create_driver(True)
+
+    i: int = 0
+    for rec in q:
+        cookies = True if i == 0 else False
+        # cookies = False
+        dbUtils.update_scrape_status(conn, batch_id, "RUNNING")
+        scrape_for_master(driver, conn, rec.master_id, rec.formats, cookies)
+        dbUtils.update_scrape_status(conn, batch_id, "COMPLETE")
+        i += 1
+
+    driver.close()
+    driver.quit()
 
 if __name__ == '__main__':
     load_dotenv()

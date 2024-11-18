@@ -19,7 +19,7 @@ class RecordItem:
             date_created: datetime,
             date_updated: datetime
 
-    ):
+    ) -> object:
         self.release_id = release_id
         self.item_id = item_id
         self.available = available
@@ -84,3 +84,21 @@ class RecordMaster:
         self.min_price = min_price
         self.desired_price=desired_price
         self.last_scrape_date = last_scrape_date
+
+
+class ScrapeQueue:
+
+    def __init__(
+            self,
+            batch_id: int,
+            master_id: int,
+            formats: str,
+            status: str,
+            date_created: datetime
+
+    ):
+        self.batch_id: int = batch_id
+        self.master_id: int = master_id
+        self.formats: str = formats
+        self.status: str = status
+        self.date_created: datetime = date_created

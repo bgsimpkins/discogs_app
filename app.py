@@ -125,6 +125,10 @@ def scrape_for_master():
     except Exception as e:
         return str(e)
 
+    driver.close()
+    driver.quit()
+
+
 @app.route('/test', methods=['GET'])
 def test_stuff():
     return render_template(

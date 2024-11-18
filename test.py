@@ -11,6 +11,7 @@ import dbUtils
 from dbUtils import *
 from discogs_api_utils import DiscogsQueryer
 from discogs_data_classes import RecordMaster
+import scrape
 
 def test_ping_python_api():
 
@@ -67,17 +68,23 @@ def test_thing():
     # conn = dbUtils.connect_to_db()
     # wl = dbUtils.get_watchlist(conn)
     # print(wl)
-    conn = dbUtils.connect_to_db()
-    wl_item = dbUtils.get_watchlist_item(conn, 35137)
-    print(wl_item)
+    # conn = dbUtils.connect_to_db()
+    # wl_item = dbUtils.get_watchlist_item(conn, 35137)
+    # print(wl_item)
 
+    # conn = dbUtils.connect_to_db()
+    # q = dbUtils.get_scrape_queue(conn,1)
+    # print(q)
+
+    conn = dbUtils.connect_to_db()
+    scrape.scrape_scrapequeue(conn)
 def test_email():
     emailUtils.test()
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     #test_email()
-    test_ping()
+    #test_ping()
     #test_ping_python_api()
-    #test_thing()
+    test_thing()
 
