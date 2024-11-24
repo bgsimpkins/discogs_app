@@ -31,7 +31,7 @@
                     </tr>
                     {% for result in watchlist %}
                         <tr class="searchResult{% if selected_master_id == result.master_id %} bold_row {% endif %}">
-                            <td id="res_select"><input type="checkbox" id="del_{{result.master_id}}" name="del_{{result.master_id}}" value="{{result.master_id}}"></td>
+                            <td id="res_select"><input type="checkbox" id="sel_{{result.master_id}}" name="sel_{{result.master_id}}" value="{{result.master_id}}"></td>
                             <td id="res_master_id" class="clickable_col"><a href="{{result.master_url}}" target="_blank">{{ result.master_id }}</a></td>
                             <td id="res_artist" class="clickable_col">{{ result.artist }}</td>
                             <td id="res_title" class="clickable_col">{{ result.title }}</td>

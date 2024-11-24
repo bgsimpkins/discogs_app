@@ -84,16 +84,21 @@ def market_watch_page():
 
         elif 'delete_items' in request.form:
             for x in request.form.items():
-                if x[0][0:4] != 'del_': continue
+                if x[0][0:4] != 'sel_': continue
 
                 print('Deleting: {x}'.format(x=x))
                 dbUtils.delete_from_watchlist(conn, x[1])
 
         elif 'scrape_items' in request.form:
-            # Now being handled with JQuery/AJAX call
-            pass
-            # print('Scraping Watchlist!')
-            # scrape.scrape_watchlist(conn)
+            # Previously handled with JQuery/AJAX call. Was sucky and inefficient
+            print('Scraping Watchlist!')
+            master_list = []
+            for x in request.form.items():
+                if x[0][0:4] != 'sel_': continue
+                master_list.append(x[1])
+
+            dbUtils.add_to_scrape_queue(conn,1,master_list)
+
         elif 'selected_master_id' in request.form:
             selected_master_id = request.form['selected_master_id']
             item_list = dbUtils.get_record_items_for_master(conn, selected_master_id)
@@ -107,6 +112,12 @@ def market_watch_page():
         watchlist=watchlist,
         selected_master_id=int(selected_master_id) if selected_master_id is not None else None,
         item_list=item_list
+    )
+
+@app.route('/scrape_queue', methods=['GET', 'POST'])
+def scrape_queue_page():
+    return render_template(
+        'scrapeQueue.html'
     )
 
 

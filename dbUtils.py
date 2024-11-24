@@ -292,3 +292,17 @@ def update_scrape_status(conn, batch_id, status):
             WHERE batch_id = %s;
         """
         execute_sql(conn, sql, [status, batch_id])
+
+
+def add_to_scrape_queue(conn, batch_id, master_list):
+    df = pd.DataFrame(columns=['batch_id','master_id'])
+
+    i = 1
+    for master_id in master_list:
+        sql = """
+            INSERT INTO `ScrapeQueue` (`batch_id`, `master_id`, `date_created`) 
+                SELECT %(batch_id)s, %(master_id)s, CURRENT_TIMESTAMP() FROM DUAL 
+                WHERE NOT EXISTS (SELECT * FROM `ScrapeQueue` 
+                      WHERE `batch_id`=%(batch_id)s AND `master_id`= %(master_id)s LIMIT 1);
+        """
+        execute_sql(conn, sql, {"batch_id": batch_id, "master_id": master_id})
