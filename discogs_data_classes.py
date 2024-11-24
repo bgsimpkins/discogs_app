@@ -94,11 +94,11 @@ class ScrapeQueue:
             master_id: int,
             formats: str,
             status: str,
-            date_created: datetime
+            date_updated: datetime
 
     ):
         self.batch_id: int = batch_id
         self.master_id: int = master_id
         self.formats: str = formats
         self.status: str = status
-        self.date_created: datetime = date_created
+        self.date_updated: datetime = date_updated

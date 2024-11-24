@@ -135,6 +135,12 @@ def scrape_queue_page():
 
     )
 
+@app.route('/do_scrape_queue', methods=['GET'])
+def scrape_queue():
+    conn = dbUtils.connect_to_db()
+    scrape.scrape_queue(conn)
+
+    return 0
 
 @app.route('/scrape_service', methods=['GET'])
 def scrape_for_master():

@@ -121,7 +121,7 @@ CREATE TABLE `ScrapeQueue` (
   `batch_id` int NOT NULL,
   `master_id` int NOT NULL,
   status varchar(20),
-  `date_created` datetime DEFAULT NULL,
+  `date_updated` datetime DEFAULT NULL,
   PRIMARY KEY (`row_id`)
 );
 

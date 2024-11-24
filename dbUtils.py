@@ -249,7 +249,7 @@ def update_desired_price_for_master(conn, master_id, desired_price):
 def update_scrape_date_for_master(conn, master_id, date_scraped):
     sql = """
             UPDATE WatchList
-                SET date_scraped= %s
+                SET date_updated= %s
             WHERE master_id = %s;
         """
     execute_sql(conn, sql, [date_scraped, master_id])
@@ -262,7 +262,7 @@ def get_scrape_queue(conn, batch_id):
                 SQ.master_id,
                 WL.formats,
                 COALESCE(SQ.status,"") as status,
-                SQ.date_created
+                SQ.date_updated
             FROM ScrapeQueue SQ
                 INNER JOIN WatchList WL
                     ON SQ.master_id = WL.master_id
@@ -278,7 +278,7 @@ def get_scrape_queue(conn, batch_id):
             master_id=row['master_id'],
             formats=row['formats'],
             status=row['status'],
-            date_created=row['date_created']
+            date_updated=row['date_updated']
 
         ))
     return item_list
@@ -300,7 +300,7 @@ def add_to_scrape_queue(conn, batch_id, master_list):
     i = 1
     for master_id in master_list:
         sql = """
-            INSERT INTO `ScrapeQueue` (`batch_id`, `master_id`, `date_created`) 
+            INSERT INTO `ScrapeQueue` (`batch_id`, `master_id`, `date_updated`) 
                 SELECT %(batch_id)s, %(master_id)s, CURRENT_TIMESTAMP() FROM DUAL 
                 WHERE NOT EXISTS (SELECT * FROM `ScrapeQueue` 
                       WHERE `batch_id`=%(batch_id)s AND `master_id`= %(master_id)s LIMIT 1);
