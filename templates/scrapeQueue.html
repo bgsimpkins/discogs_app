@@ -1,0 +1,49 @@
+{% extends "menuBar.html" %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+
+    <title>Discogs API Search and Monitor</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='searchScript.js') }}"></script>
+</head>
+    <br>
+    {% if alert_text %}
+        <div id="form_alert" style="...">
+            {{alert_text}}
+        </div>
+    {% endif%}
+
+    <h3>Current Scrape Queue:</h3>
+    <div id="current_queue">
+        {% if scrape_queue %}
+            <form id="scrape_queue_form" method="post">
+
+                <table>
+                    <tbody>
+                        <tr>
+                            <th>Batch Id</th>
+                            <th>Master Id</th>
+                            <th>Status</th>
+                            <th>Date Created</th>
+                        </tr>
+                        {% for result in scrape_queue %}
+                            <tr>
+                                <td id="batch_id">{{ result.batch_id }}</td>
+                                <td id="master_id">{{ result.master_id }}</td>
+                                <td id="status">{{ result.status }}</td>
+                                <td id="date_created">{{ result.date_created }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <br>
+                <input type="submit" id="scrape_queue" name="scrape_queue" value="Scrape Queue">
+            </form>
+
+        {% endif%}
+    </div>
+
+{% endblock %}

@@ -218,7 +218,7 @@ def scrape_watchlist(conn):
     driver.quit()
 
 
-def scrape_scrapequeue(conn):
+def scrape_queue(conn):
     print('Scraping scrape queue')
     batch_id = 1            ##TODO: Hard-coded. Need to tweak if wanting to scrape multiple batchs (sync or async)
     q = dbUtils.get_scrape_queue(conn, batch_id)

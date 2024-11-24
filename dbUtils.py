@@ -261,7 +261,7 @@ def get_scrape_queue(conn, batch_id):
                 SQ.batch_id,
                 SQ.master_id,
                 WL.formats,
-                SQ.status,
+                COALESCE(SQ.status,"") as status,
                 SQ.date_created
             FROM ScrapeQueue SQ
                 INNER JOIN WatchList WL

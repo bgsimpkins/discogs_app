@@ -4,7 +4,7 @@ import datetime
 
 import pandas as pd
 from dotenv import load_dotenv
-import emailUtils
+#import emailUtils
 import requests
 
 import dbUtils
@@ -77,7 +77,7 @@ def test_thing():
     # print(q)
 
     conn = dbUtils.connect_to_db()
-    scrape.scrape_scrapequeue(conn)
+    scrape.scrape_queue(conn)
 def test_email():
     emailUtils.test()
 

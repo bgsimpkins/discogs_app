@@ -89,7 +89,7 @@ def market_watch_page():
                 print('Deleting: {x}'.format(x=x))
                 dbUtils.delete_from_watchlist(conn, x[1])
 
-        elif 'scrape_items' in request.form:
+        elif 'add_to_scrape_queue' in request.form:
             # Previously handled with JQuery/AJAX call. Was sucky and inefficient
             print('Scraping Watchlist!')
             master_list = []
@@ -116,8 +116,23 @@ def market_watch_page():
 
 @app.route('/scrape_queue', methods=['GET', 'POST'])
 def scrape_queue_page():
+    conn = dbUtils.connect_to_db()
+
+    if request.method == 'POST':
+        if 'scrape_queue' in request.form:
+            print("scraping!")
+            #scrape.scrape_queue(conn)
+
+
+            # Need to reload scrape queue to update status
+            #scrape_queue = dbUtils.get_scrape_queue(conn, 1)
+
+    scrape_queue = dbUtils.get_scrape_queue(conn, 1)
+
     return render_template(
-        'scrapeQueue.html'
+        'scrapeQueue.html',
+        scrape_queue=scrape_queue
+
     )
 
 
