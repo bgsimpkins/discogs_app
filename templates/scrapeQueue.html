@@ -9,25 +9,31 @@
     <script src="{{ url_for('static', filename='scrapeScript.js') }}"></script>
 </head>
     <br>
-    {% if alert_text %}
-        <div id="form_alert" style="...">
+        <div id="form_alert" style="..." hidden>
             {{alert_text}}
         </div>
-    {% endif%}
 
     <div id="debugText"></div>
     <br>
 
+
+
     <h3>Current Scrape Queue:</h3>
+
+
     <div id="current_queue">
         {% if scrape_queue %}
             <form id="scrape_queue_form" method="post">
+                <input type="submit" id="scrape_queue" name="scrape_queue" value="Scrape Items in Queue">
+                <br>
 
-                <table>
+                <table style="height: 150px">
                     <tbody>
                         <tr>
                             <th>Batch Id</th>
                             <th>Master Id</th>
+                            <th>Artist</th>
+                            <th>Title</th>
                             <th>Status</th>
                             <th>Date Updated</th>
                         </tr>
@@ -35,6 +41,8 @@
                             <tr>
                                 <td id="batch_id">{{ result.batch_id }}</td>
                                 <td id="master_id">{{ result.master_id }}</td>
+                                <td id="artist">{{ result.artist }}</td>
+                                <td id="title">{{ result.title }}</td>
                                 <td id="status">{{ result.status }}</td>
                                 <td id="date_updated">{{ result.date_updated }}</td>
                             </tr>
@@ -43,8 +51,39 @@
                 </table>
 
                 <br>
-                <input type="submit" id="scrape_queue" name="scrape_queue" value="Scrape Queue">
             </form>
+
+        {% endif%}
+    </div>
+
+<h3>Scrape History:</h3>
+    <div id="historical_queue">
+        {% if historical_queue %}
+
+                <table style="height: 300px">
+                    <tbody>
+                        <tr>
+                            <th>Batch Id</th>
+                            <th>Master Id</th>
+                            <th>Artist</th>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th>Date Updated</th>
+                        </tr>
+                        {% for result in historical_queue %}
+                            <tr>
+                                <td id="batch_id_hist">{{ result.batch_id }}</td>
+                                <td id="master_id_hist">{{ result.master_id }}</td>
+                                <td id="artist_hist">{{ result.artist }}</td>
+                                <td id="title_hist">{{ result.title }}</td>
+                                <td id="status_hist">{{ result.status }}</td>
+                                <td id="date_updated_hist">{{ result.date_updated }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <br>
 
         {% endif%}
     </div>

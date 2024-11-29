@@ -127,11 +127,12 @@ def scrape_queue_page():
             # Need to reload scrape queue to update status
             #scrape_queue = dbUtils.get_scrape_queue(conn, 1)
 
-    scrape_queue = dbUtils.get_scrape_queue(conn, 1)
+    current_queue, historical_queue = dbUtils.get_scrape_queue(conn, 1)
 
     return render_template(
         'scrapeQueue.html',
-        scrape_queue=scrape_queue
+        scrape_queue=current_queue,
+        historical_queue=historical_queue
 
     )
 

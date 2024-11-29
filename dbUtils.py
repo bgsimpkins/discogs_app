@@ -249,10 +249,11 @@ def update_desired_price_for_master(conn, master_id, desired_price):
 def update_scrape_date_for_master(conn, master_id, date_scraped):
     sql = """
             UPDATE WatchList
-                SET date_updated= %s
-            WHERE master_id = %s;
+                SET date_updated= CURRENT_TIMESTAMP(),
+                    date_scraped = %(date_scraped)s
+            WHERE master_id = %(master_id)s;
         """
-    execute_sql(conn, sql, [date_scraped, master_id])
+    execute_sql(conn, sql, {"date_scraped":date_scraped, "master_id":master_id})
 
 
 def get_scrape_queue(conn, batch_id):
@@ -260,6 +261,8 @@ def get_scrape_queue(conn, batch_id):
             SELECT
                 SQ.batch_id,
                 SQ.master_id,
+                WL.artist,
+                WL.title,
                 WL.formats,
                 COALESCE(SQ.status,"") as status,
                 SQ.date_updated
@@ -271,27 +274,48 @@ def get_scrape_queue(conn, batch_id):
         """
     res: pd.DataFrame = pd.read_sql(sql, conn, params=[batch_id])
 
-    item_list = []
-    for index, row in res.iterrows():
-        item_list.append(ScrapeQueue(
+    current_queue = res.loc[(res["status"] != "COMPLETE") | (res["status"].isna()),]
+    current_queue_list = []
+
+    for index, row in current_queue.iterrows():
+        current_queue_list.append(ScrapeQueue(
             batch_id=row['batch_id'],
             master_id=row['master_id'],
+            artist=row['artist'],
+            title=row['title'],
             formats=row['formats'],
             status=row['status'],
             date_updated=row['date_updated']
-
         ))
-    return item_list
+
+    ## TODO: Should we catch and handle FAILED here?
+    historical_queue = res.loc[(res["status"] == "COMPLETE"),]
+    historical_queue_list = []
+
+    for index, row in historical_queue.iterrows():
+        historical_queue_list.append(ScrapeQueue(
+            batch_id=row['batch_id'],
+            master_id=row['master_id'],
+            artist=row['artist'],
+            title=row['title'],
+            formats=row['formats'],
+            status=row['status'],
+            date_updated=row['date_updated']
+        ))
+
+    return current_queue_list, historical_queue_list
 
 
-def update_scrape_status(conn, batch_id, status):
+def update_scrape_status(conn, batch_id, master_id, status):
 
         sql = """
             UPDATE ScrapeQueue
-                SET status= %s
-            WHERE batch_id = %s;
+                SET status= %s,
+                    date_updated=CURRENT_TIMESTAMP()
+            WHERE batch_id = %s
+                and master_id = %s;
         """
-        execute_sql(conn, sql, [status, batch_id])
+        execute_sql(conn, sql, [status, batch_id, master_id])
 
 
 def add_to_scrape_queue(conn, batch_id, master_list):
@@ -299,10 +323,17 @@ def add_to_scrape_queue(conn, batch_id, master_list):
 
     i = 1
     for master_id in master_list:
+        ## Upsert. Unnecesary because UI will prevent inserting while scraping. Okay to scrape something in history again
         sql = """
             INSERT INTO `ScrapeQueue` (`batch_id`, `master_id`, `date_updated`) 
                 SELECT %(batch_id)s, %(master_id)s, CURRENT_TIMESTAMP() FROM DUAL 
                 WHERE NOT EXISTS (SELECT * FROM `ScrapeQueue` 
                       WHERE `batch_id`=%(batch_id)s AND `master_id`= %(master_id)s LIMIT 1);
+        """
+
+        sql = """
+            INSERT INTO `ScrapeQueue` (`batch_id`, `master_id`, `date_updated`) VALUES(
+                %(batch_id)s, %(master_id)s, CURRENT_TIMESTAMP()
+            );
         """
         execute_sql(conn, sql, {"batch_id": batch_id, "master_id": master_id})

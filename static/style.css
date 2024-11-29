@@ -35,12 +35,18 @@ table{
     border-style: solid;
     border-width: 1px;
     font-family: arial;
+    margin-top:  20px;
+    display: inline-block;
+    overflow: auto;
 }
 
 th{
+    position: sticky;
+    top:0px;
     color: #FFFFFF;
     background-color: #33B5E5;
     font-family: arial;
+
 }
 
 tr:hover{

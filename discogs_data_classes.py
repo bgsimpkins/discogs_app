@@ -92,6 +92,8 @@ class ScrapeQueue:
             self,
             batch_id: int,
             master_id: int,
+            artist: str,
+            title: str,
             formats: str,
             status: str,
             date_updated: datetime
@@ -99,6 +101,8 @@ class ScrapeQueue:
     ):
         self.batch_id: int = batch_id
         self.master_id: int = master_id
+        self.artist: str = artist
+        self.title: str = title
         self.formats: str = formats
         self.status: str = status
         self.date_updated: datetime = date_updated

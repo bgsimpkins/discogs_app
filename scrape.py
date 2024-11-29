@@ -221,16 +221,16 @@ def scrape_watchlist(conn):
 def scrape_queue(conn):
     print('Scraping scrape queue')
     batch_id = 1            ##TODO: Hard-coded. Need to tweak if wanting to scrape multiple batchs (sync or async)
-    q = dbUtils.get_scrape_queue(conn, batch_id)
+    q, historical = dbUtils.get_scrape_queue(conn, batch_id)
     driver = create_driver(True)
 
     i: int = 0
     for rec in q:
         cookies = True if i == 0 else False
         # cookies = False
-        dbUtils.update_scrape_status(conn, batch_id, "RUNNING")
+        dbUtils.update_scrape_status(conn, batch_id, rec.master_id, "RUNNING")
         scrape_for_master(driver, conn, rec.master_id, rec.formats, cookies)
-        dbUtils.update_scrape_status(conn, batch_id, "COMPLETE")
+        dbUtils.update_scrape_status(conn, batch_id, rec.master_id, "COMPLETE")
         i += 1
 
     driver.close()
