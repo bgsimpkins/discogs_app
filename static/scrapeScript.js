@@ -16,11 +16,11 @@ $(document).ready(function()
         //Grey out input submit button
         //$("#scrape_items").attr("disabled", "disabled");
         if (submitButton == "scrape_queue"){
-            $("#form_alert").show();
-            $("#form_alert").append("Scrape starting!");
-            event.preventDefault();
-            //alert("scrape submitted!");
 
+            event.preventDefault();
+            $("#form_alert").show();
+            $("#alert_div").append("<div id='form_alert'>Scrape running! <a href='/scrape_queue'>Refresh</a></div>");
+            $("#scrape_queue").prop("disabled",true);
 
             var url = "do_scrape_queue";
             $.get(url, function(data, status){

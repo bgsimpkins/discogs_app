@@ -9,8 +9,12 @@
     <script src="{{ url_for('static', filename='scrapeScript.js') }}"></script>
 </head>
     <br>
-        <div id="form_alert" style="..." hidden>
-            {{alert_text}}
+        <div id="alert_div">
+        {% if alert_text %}
+            <div id="form_alert" style="...">
+                {{alert_text | safe}}
+            </div>
+        {% endif%}
         </div>
 
     <div id="debugText"></div>
@@ -24,7 +28,7 @@
     <div id="current_queue">
         {% if scrape_queue %}
             <form id="scrape_queue_form" method="post">
-                <input type="submit" id="scrape_queue" name="scrape_queue" value="Scrape Items in Queue">
+                <input type="submit" id="scrape_queue" name="scrape_queue" value="Scrape Items in Queue" {% if alert_text %}disabled {% endif %} >
                 <br>
 
                 <table style="height: 150px">

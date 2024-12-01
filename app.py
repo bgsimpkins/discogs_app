@@ -72,6 +72,8 @@ def market_watch_page():
     selected_master_id = None
     item_list = None
 
+    alert_text = None
+
     if request.method == 'POST':
         if 'update_price' in request.form:
             for x in request.form.items():
@@ -98,6 +100,7 @@ def market_watch_page():
                 master_list.append(x[1])
 
             dbUtils.add_to_scrape_queue(conn,1,master_list)
+            alert_text = """Items added to <a href="/scrape_queue">Scrape Queue</a>"""
 
         elif 'selected_master_id' in request.form:
             selected_master_id = request.form['selected_master_id']
@@ -111,12 +114,20 @@ def market_watch_page():
         'marketWatch.html',
         watchlist=watchlist,
         selected_master_id=int(selected_master_id) if selected_master_id is not None else None,
-        item_list=item_list
+        item_list=item_list,
+        alert_text=alert_text
     )
 
 @app.route('/scrape_queue', methods=['GET', 'POST'])
 def scrape_queue_page():
     conn = dbUtils.connect_to_db()
+
+    alert_text = None
+    scrape_running = False
+
+    if dbUtils.is_scrape_active(conn,1):
+        alert_text = """Scrape running! <a href="/scrape_queue">Refresh</a>"""
+        scrape_running = True
 
     if request.method == 'POST':
         if 'scrape_queue' in request.form:
@@ -132,7 +143,8 @@ def scrape_queue_page():
     return render_template(
         'scrapeQueue.html',
         scrape_queue=current_queue,
-        historical_queue=historical_queue
+        historical_queue=historical_queue,
+        alert_text=alert_text
 
     )
 

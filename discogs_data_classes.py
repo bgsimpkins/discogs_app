@@ -90,6 +90,7 @@ class ScrapeQueue:
 
     def __init__(
             self,
+            row_id: int,
             batch_id: int,
             master_id: int,
             artist: str,
@@ -99,6 +100,7 @@ class ScrapeQueue:
             date_updated: datetime
 
     ):
+        self.row_id: int = row_id
         self.batch_id: int = batch_id
         self.master_id: int = master_id
         self.artist: str = artist

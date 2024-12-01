@@ -46,7 +46,7 @@ def get_records_for_release(driver, conn, type, format, id, cookies=True):
         rows = table.find_elements(By.CLASS_NAME,'shortcut_navigable ')
     except Exception:
         print('No items found!')
-        dbUtils.update_scrape_date_for_master(conn, id, datetime.now())
+        dbUtils.update_scrape_date_in_watchlist(conn, id, datetime.now())
         return
 
     dollar_regex = '\d+(?:\.\d+)?'
@@ -140,7 +140,7 @@ def get_records_for_release(driver, conn, type, format, id, cookies=True):
 
         dbUtils.insert_record_item(conn, ri)
 
-        dbUtils.update_scrape_date_for_master(conn, id, datetime.now())
+        dbUtils.update_scrape_date_in_watchlist(conn, id, datetime.now())
 
     # print(table)
 
@@ -228,9 +228,9 @@ def scrape_queue(conn):
     for rec in q:
         cookies = True if i == 0 else False
         # cookies = False
-        dbUtils.update_scrape_status(conn, batch_id, rec.master_id, "RUNNING")
+        dbUtils.update_scrape_status(conn, rec.row_id, "RUNNING")
         scrape_for_master(driver, conn, rec.master_id, rec.formats, cookies)
-        dbUtils.update_scrape_status(conn, batch_id, rec.master_id, "COMPLETE")
+        dbUtils.update_scrape_status(conn, rec.row_id, "COMPLETE")
         i += 1
 
     driver.close()

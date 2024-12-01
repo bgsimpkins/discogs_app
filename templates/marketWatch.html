@@ -7,6 +7,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="{{ url_for('static', filename='marketWatchScript.js') }}"></script>
 </head>
+
+    <br>
+        {% if alert_text %}
+            <div id="form_alert" style="...">
+                {{alert_text | safe}}
+            </div>
+        {% endif%}
     <br>
     <h2>Market Watchlist</h2>
 

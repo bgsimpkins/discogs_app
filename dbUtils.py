@@ -246,7 +246,7 @@ def update_desired_price_for_master(conn, master_id, desired_price):
     execute_sql(conn, sql, [desired_price, master_id])
 
 
-def update_scrape_date_for_master(conn, master_id, date_scraped):
+def update_scrape_date_in_watchlist(conn, master_id, date_scraped):
     sql = """
             UPDATE WatchList
                 SET date_updated= CURRENT_TIMESTAMP(),
@@ -259,6 +259,7 @@ def update_scrape_date_for_master(conn, master_id, date_scraped):
 def get_scrape_queue(conn, batch_id):
     sql = """
             SELECT
+                SQ.row_id,
                 SQ.batch_id,
                 SQ.master_id,
                 WL.artist,
@@ -270,6 +271,7 @@ def get_scrape_queue(conn, batch_id):
                 INNER JOIN WatchList WL
                     ON SQ.master_id = WL.master_id
             WHERE batch_id = %s
+            ORDER BY date_updated DESC
             ;
         """
     res: pd.DataFrame = pd.read_sql(sql, conn, params=[batch_id])
@@ -279,6 +281,7 @@ def get_scrape_queue(conn, batch_id):
 
     for index, row in current_queue.iterrows():
         current_queue_list.append(ScrapeQueue(
+            row_id=row['row_id'],
             batch_id=row['batch_id'],
             master_id=row['master_id'],
             artist=row['artist'],
@@ -294,6 +297,7 @@ def get_scrape_queue(conn, batch_id):
 
     for index, row in historical_queue.iterrows():
         historical_queue_list.append(ScrapeQueue(
+            row_id=row['row_id'],
             batch_id=row['batch_id'],
             master_id=row['master_id'],
             artist=row['artist'],
@@ -306,16 +310,15 @@ def get_scrape_queue(conn, batch_id):
     return current_queue_list, historical_queue_list
 
 
-def update_scrape_status(conn, batch_id, master_id, status):
+def update_scrape_status(conn, row_id, status):
 
         sql = """
             UPDATE ScrapeQueue
                 SET status= %s,
                     date_updated=CURRENT_TIMESTAMP()
-            WHERE batch_id = %s
-                and master_id = %s;
+            WHERE row_id = %s;
         """
-        execute_sql(conn, sql, [status, batch_id, master_id])
+        execute_sql(conn, sql, [status, row_id])
 
 
 def add_to_scrape_queue(conn, batch_id, master_list):
@@ -324,12 +327,12 @@ def add_to_scrape_queue(conn, batch_id, master_list):
     i = 1
     for master_id in master_list:
         ## Upsert. Unnecesary because UI will prevent inserting while scraping. Okay to scrape something in history again
-        sql = """
-            INSERT INTO `ScrapeQueue` (`batch_id`, `master_id`, `date_updated`) 
-                SELECT %(batch_id)s, %(master_id)s, CURRENT_TIMESTAMP() FROM DUAL 
-                WHERE NOT EXISTS (SELECT * FROM `ScrapeQueue` 
-                      WHERE `batch_id`=%(batch_id)s AND `master_id`= %(master_id)s LIMIT 1);
-        """
+        # sql = """
+        #     INSERT INTO `ScrapeQueue` (`batch_id`, `master_id`, `date_updated`)
+        #         SELECT %(batch_id)s, %(master_id)s, CURRENT_TIMESTAMP() FROM DUAL
+        #         WHERE NOT EXISTS (SELECT * FROM `ScrapeQueue`
+        #               WHERE `batch_id`=%(batch_id)s AND `master_id`= %(master_id)s LIMIT 1);
+        # """
 
         sql = """
             INSERT INTO `ScrapeQueue` (`batch_id`, `master_id`, `date_updated`) VALUES(
@@ -337,3 +340,16 @@ def add_to_scrape_queue(conn, batch_id, master_list):
             );
         """
         execute_sql(conn, sql, {"batch_id": batch_id, "master_id": master_id})
+
+
+def is_scrape_active(conn, batch_id):
+    sql = """
+            SELECT row_id
+            FROM ScrapeQueue
+            WHERE batch_id = %s
+                AND status = "RUNNING"
+            ;
+            """
+    res: pd.DataFrame = pd.read_sql(sql, conn, params=[batch_id])
+
+    return res.shape[0] > 0
