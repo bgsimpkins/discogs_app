@@ -144,8 +144,8 @@ def scrape_queue_page():
         'scrapeQueue.html',
         scrape_queue=current_queue,
         historical_queue=historical_queue,
-        alert_text=alert_text
-
+        alert_text=alert_text,
+        scrape_running=scrape_running
     )
 
 @app.route('/do_scrape_queue', methods=['GET'])

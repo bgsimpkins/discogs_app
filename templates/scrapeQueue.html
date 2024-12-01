@@ -22,13 +22,13 @@
 
 
 
-    <h3>Current Scrape Queue:</h3>
+    <h3>Current Scrape Queue:{% if not scrape_queue %}&nbsp; &nbsp; EMPTY {% endif %}</h3>
 
 
     <div id="current_queue">
         {% if scrape_queue %}
             <form id="scrape_queue_form" method="post">
-                <input type="submit" id="scrape_queue" name="scrape_queue" value="Scrape Items in Queue" {% if alert_text %}disabled {% endif %} >
+                <input type="submit" id="scrape_queue" name="scrape_queue" value="Scrape Items in Queue" {% if scrape_running %}disabled {% endif %} >
                 <br>
 
                 <table style="height: 150px">
