@@ -1,4 +1,4 @@
-FROM python:3.9-slim-buster
+FROM python:3.9-slim-bookworm
 ENV TZ="America/Chicago"
 RUN apt-get -y update && apt-get install -y --no-install-recommends ca-certificates curl firefox-esr wget bzip2 xz-utils
 
