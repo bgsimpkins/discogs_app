@@ -1,0 +1,24 @@
+
+services:
+  web:
+    build: .
+    ports:
+      - "5001:5001"
+    environment:
+      APP_MODE: WEB_APP
+      DB_HOST: db
+      DB_USER: root
+      DB_PASS: root_password
+      DB_DB: discogs_db
+    #network_mode: host
+  db:
+    #image: docker_db # You can specify a different version like mysql:latest
+    build:
+      dockerfile: Dockerfile.backend
+    container_name: discogs_backend # Optional: Assign a custom container name
+    ports:
+      - "3306:3306" # Map host port 3306 to container port 3306
+    volumes:
+      - mysql_data:/var/lib/mysql # Persist data using a named volume
+volumes:
+  mysql_data: # Define the named volume

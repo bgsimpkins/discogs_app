@@ -1,0 +1,11 @@
+#image_name= discogs_backend
+
+from mysql:8.0
+
+ENV MYSQL_ROOT_PASSWORD=root_password
+ENV MYSQL_DATABASE=discogs_db
+ENV MYSQL_USER=awesome_user
+ENV MYSQL_PASSWORD=awesome_password
+
+#Copy DB create script to container
+COPY ./sql/discogs_db.sql /docker-entrypoint-initdb.d/
